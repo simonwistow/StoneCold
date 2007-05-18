@@ -59,7 +59,7 @@ sub new {
     $opts{dbfile} ||= 'db/playlist.db';
     $opts{user}   ||= 'default';
     $opts{path}   ||= '/virtual/thegestalt.org/www/html/warez';
-    $opts{url}    ||= 'http://thegestalt.org/warez';
+    $opts{uri}    ||= 'http://thegestalt.org/warez';
     $opts{default_name} ||= 'simon';
     
     $opts{_db}      = DBM::Deep->new( file      => $opts{dbfile},
