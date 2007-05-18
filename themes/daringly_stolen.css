@@ -1,3 +1,9 @@
+/****************************************************
+ *
+ * Classes
+ *
+ ****************************************************/
+
 body {
     margin-top: 20;
     padding: 0;
@@ -11,29 +17,6 @@ body {
     color: #ddd;
 }
 
-#inner {
-    width: 320px;
-    margin: 0 auto;
-    align: center;
-
-}
-
-#choose_user {
-	padding-top: 40px;
-}
-
-#content{
-    text-align: center;
-    width: 100%;
-}
-
-
-#items {
-    text-align: left;
-    margin: 0 auto;
-    padding-top: 40px;
-    align: center;
-}
 
 .light {
 /*
@@ -50,7 +33,7 @@ a {
     text-decoration: none;
     }
 
-a:link {
+a {
     text-decoration: none;
     color: inherit;
     border-color: #888;
@@ -60,9 +43,42 @@ a:link {
     background-color: inherit;
     }
 
+
+
 a em {
     padding-bottom: 2px; /* Hack for WebKit; otherwise the underscore padding is 0 */
     }
 
 
+
+/****************************************************
+ *
+ * IDs
+ *
+ ****************************************************/
+
+
+#inner {
+    width: 320px;
+    margin: 0 auto;
+    align: center;
+
+}
+
+#choose_user {
+    padding-top: 40px;
+}
+
+#content{
+    text-align: center;
+    width: 100%;
+}
+
+
+#items {
+    text-align: left;
+    margin: 0 auto;
+    padding-top: 40px;
+    align: center;
+}
 

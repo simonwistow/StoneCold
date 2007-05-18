@@ -3,7 +3,7 @@
     <title>Stone Cold Playa - [% stonecold.name %]'s Music</title>
 
     <link rel="alternate" type="application/rss+xml" title="RSS" href="feed.cgi" />
-    <link rel="stylesheet" type="text/css" media="screen"  href="assets/style.css" />
+    <link rel="stylesheet" type="text/css" media="screen"  href="themes/[% theme %].css" />
     <script type="text/javascript" src="assets/prototype.js"></script>
     <script type="text/javascript" src="assets/swfobject.js"></script>
     <script type="text/javascript" src="assets/swfmacmousewheel.js"></script>
@@ -132,6 +132,14 @@ Start a new user
 </p>
 </div>
 </div>
+
+<hr class="bottom_divide" />
+<p id="bottom">
+Made with 
+<a href="http://svn.unixbeard.net/simon/StoneCold">StoneCold</a> 
+and 
+<a href="http://www.jeroenwijering.com/?item=Flash_MP3_Player">Jeroen Wijering's Flash MP3 Player</a>
+</p>
 
 </body>
 </html>

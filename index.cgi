@@ -19,5 +19,5 @@ my $sc     = StoneCold->new( user => $user );
 
 
 my $template = Template->new;
-$template->process('templates/index', { stonecold => $sc }) || die $template->error();
+$template->process('templates/index', { stonecold => $sc, theme => 'daringly_stolen' }) || die $template->error();
 
