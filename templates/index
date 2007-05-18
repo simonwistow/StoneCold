@@ -10,46 +10,47 @@
     <script type="text/javascript">
 
 
-	var user = getUser();
+    var user = getUser();
+    var feed = 'feed.cgi?user=[% stonecold.user %]';
 
-	function getUser() {
-		user = argItems('user');
-		if (user.length==0) {
-			user = 'default';
-		}
-	}
+    function getUser() {
+        var tmp = argItems('user');
+        if (tmp.length==0) {
+            tmp = 'default';
+        }
+    }
 
-	function pageLoad() {
-		getUser();
-		checkNewPlayList();
-	}
+    function pageLoad() {
+        user = getUser();
+        checkNewPlayList();
+    }
 
     function loadFile(obj) { thisMovie("mpl").loadFile(obj); };
     function addItem(obj,idx) { thisMovie("mpl").addItem(obj,idx); }   
 
-	function argItems (sArg) {
-		var sArgs = location.search.slice(1).split('&');
-    	var r = ''
-    	for (var i = 0; i < sArgs.length; i++) {
-        	if (sArgs[i].slice(0,sArgs[i].indexOf('=')) == sArg) {
-            	r = sArgs[i].slice(sArgs[i].indexOf('=')+1);
-            	break;
-        	}
-			
-    	}
-    	return (r.length > 0 ? unescape(r).split(',') : '')
-	}
+    function argItems (sArg) {
+        var sArgs = location.search.slice(1).split('&');
+        var r = ''
+        for (var i = 0; i < sArgs.length; i++) {
+            if (sArgs[i].slice(0,sArgs[i].indexOf('=')) == sArg) {
+                r = sArgs[i].slice(sArgs[i].indexOf('=')+1);
+                break;
+            }
+            
+        }
+        return (r.length > 0 ? unescape(r).split(',') : '')
+    }
 
 
     var last_modded="";
     function checkNewPlayList() {
-        new Ajax.Request('feed.cgi?user=[% stonecold.user %]', {
+        new Ajax.Request(feed, {
             method: 'head',
               onSuccess: function(transport) {
                 var new_modded = transport.getResponseHeader("Last-Modified");
                 if (new_modded != last_modded) {
                     last_modded = new_modded;
-                    loadFile({file:'feed.cgi?user=[% stonecold.user %]'});
+                    loadFile({file: feed});
                 } 
               }
          });
@@ -59,11 +60,11 @@
     }
 
     function addNew(what) {
-        var url = 'feed.cgi?state=add&user=[% stonecold.user %]&file='+ encodeURIComponent(what);
+        var url = feed+'&state=add&file='+ encodeURIComponent(what);
         new Ajax.Request(url, {
             method: 'get',
               onSuccess: function(transport) {
-                loadFile({file:'feed.cgi?user=[% stonecold.user %]'});
+                    checkNewPlayList();
               }
          });
     }
