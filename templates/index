@@ -1,0 +1,137 @@
+<html>
+<head>
+    <title>Stone Cold Playa - [% stonecold.name %]'s Music</title>
+
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="feed.cgi" />
+    <link rel="stylesheet" type="text/css" media="screen"  href="assets/style.css" />
+    <script type="text/javascript" src="assets/prototype.js"></script>
+    <script type="text/javascript" src="assets/swfobject.js"></script>
+    <script type="text/javascript" src="assets/swfmacmousewheel.js"></script>
+    <script type="text/javascript">
+
+
+	var user = getUser();
+
+	function getUser() {
+		user = argItems('user');
+		if (user.length==0) {
+			user = 'default';
+		}
+	}
+
+	function pageLoad() {
+		getUser();
+		checkNewPlayList();
+	}
+
+    function loadFile(obj) { thisMovie("mpl").loadFile(obj); };
+    function addItem(obj,idx) { thisMovie("mpl").addItem(obj,idx); }   
+
+	function argItems (sArg) {
+		var sArgs = location.search.slice(1).split('&');
+    	var r = ''
+    	for (var i = 0; i < sArgs.length; i++) {
+        	if (sArgs[i].slice(0,sArgs[i].indexOf('=')) == sArg) {
+            	r = sArgs[i].slice(sArgs[i].indexOf('=')+1);
+            	break;
+        	}
+			
+    	}
+    	return (r.length > 0 ? unescape(r).split(',') : '')
+	}
+
+
+    var last_modded="";
+    function checkNewPlayList() {
+        new Ajax.Request('feed.cgi?user=[% stonecold.user %]', {
+            method: 'head',
+              onSuccess: function(transport) {
+                var new_modded = transport.getResponseHeader("Last-Modified");
+                if (new_modded != last_modded) {
+                    last_modded = new_modded;
+                    loadFile({file:'feed.cgi?user=[% stonecold.user %]'});
+                } 
+              }
+         });
+
+        var t = window.setTimeout('checkNewPlayList()', 3000);
+
+    }
+
+    function addNew(what) {
+        var url = 'feed.cgi?state=add&user=[% stonecold.user %]&file='+ encodeURIComponent(what);
+        new Ajax.Request(url, {
+            method: 'get',
+              onSuccess: function(transport) {
+                loadFile({file:'feed.cgi?user=[% stonecold.user %]'});
+              }
+         });
+    }
+
+
+    // This is a javascript handler for the player and is always needed.
+    function thisMovie(movieName) {
+        if(navigator.appName.indexOf("Microsoft") != -1) {
+            return window[movieName];
+        } else {
+            return document[movieName];
+        }
+    };
+
+    </script>
+
+
+
+</head>
+<body onLoad="pageLoad()">
+
+
+<div id="content">
+<div id="inner">
+<div id="player_div">
+    <p id="player"><a href="http://www.macromedia.com/go/getflashplayer">Get Flash</a> to see this player.</p>
+    <script type="text/javascript">
+    var so = new SWFObject('assets/mediaplayer.swf','mpl','320','140','7');
+    so.addParam('allowfullscreen','true');
+    so.addVariable('file','feed.cgi?user=[% stonecold.user %]');
+    so.addVariable('height','140');
+    so.addVariable('width','320');
+    so.addVariable('displaywidth','120');
+    so.addVariable('javascriptid','mpl');
+    so.addVariable('enablejs','true');
+    so.addVariable('repeat', 'list');
+    so.addVariable('shuffle', 'false');
+    so.write('player');
+    </script>
+</div>
+<p id="choose_user">
+<form method="POST">
+[% SET people = stonecold.people %]
+[% IF people.size > 1 %]
+Choose an existing user 
+<select name="user">
+[% FOR person = people %]
+[%# NEXT IF person=="default" %]
+<option value="[% person %]" [% IF person==stonecold.user; "selected='1'"; END %]>[% person | ucfirst %]</option>
+[% END %] 
+</select>&nbsp;<br />
+... or start a new user 
+[% ELSE %]
+Start a new user 
+[% END %]
+<input type="text" name="new_user" />&nbsp;
+<input type="submit" value="Switch User" />
+</form>
+</p>
+<p id="items">
+[% class="light" %]
+[% FOREACH file = stonecold.files %]
+<span class="[% class %]"><a href="javascript:addNew('[% file %]')">[% file %]</a></span><br />
+[% IF class=="light"; THEN; class="dark"; ELSE; class="light"; END %]
+[% END %]
+</p>
+</div>
+</div>
+
+</body>
+</html>
