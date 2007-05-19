@@ -12,9 +12,9 @@ use StoneCold;
 
 
 my $cgi   = Class::CGI->new;
-my $user  = $cgi->param('user') || 'default';
+my $user  = $cgi->param('user')  || 'default';
 my $sc    = StoneCold->new(user => $user);
-my $state = $cgi->param('state');
+my $state = $cgi->param('state') || "";
 
 my $name  = $sc->name;
 
@@ -30,11 +30,13 @@ print $cgi->header( "-type"          => 'text/plain',
                     "-Last-Modified" =>  time2str($sc->changed));
 
 my $rss = XML::RSS->new( version => '2.0' );
+$rss->add_module( prefix => 'media', uri => 'http://search.yahoo.com/mrss/' );
     
 $rss->channel( title => "${name}'s Music" );
 foreach my $entry ($sc->entries)
 {
-    $rss->add_item( 
+
+    my %item = (
         guid  => $entry->id,
         title => $entry->title,
         enclosure => {
@@ -43,6 +45,18 @@ foreach my $entry ($sc->entries)
                 length => $entry->size,
         },
     );
+    my $thumb = $entry->thumbnail;
+    if ($thumb) 
+    {
+        $item{media} = { thumbnail =>  {
+            url    => $entry->uri_base."/".$thumb->filename,
+            width  => $thumb->width,
+            height => $thumb->height,
+        }};
+    }
+    $rss->add_item(%item); 
+        
+
 }
 print $rss->as_string;
 exit(0);

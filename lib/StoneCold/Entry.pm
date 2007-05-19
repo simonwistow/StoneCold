@@ -1,11 +1,12 @@
 package StoneCold::Entry;
 
 use strict;
+use StoneCold::Thumbnail;
 
 sub new {
     my $class = shift;
     my %opts  = @_;
-
+    $opts{thumbnail} = StoneCold::Thumbnail->new($opts{path});
     return bless \%opts, $class;
 }
 
@@ -19,6 +20,11 @@ sub name {
 sub path {
     return $_[0]->{path};
 }
+
+sub uri_base {
+    return $_[0]->{uri};
+}
+
 sub title {
     # maybe do MP3 titling shennigans later?
     return $_[0]->name;
@@ -44,5 +50,7 @@ sub uri {
     return $self->{uri}."/".$self->name;
 }
 
-
+sub thumbnail {
+    return $_[0]->{thumbnail};
+}
 1;
