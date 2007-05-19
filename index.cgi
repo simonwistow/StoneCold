@@ -11,7 +11,7 @@ use StoneCold;
 
 my $cgi    = Class::CGI->new;
 my $user   = $cgi->param('new_user') || $cgi->param('user') || $cgi->cookie('player_user') || 'default';
-my $cookie = $cgi->cookie( -new_user => $user );
+my $cookie = $cgi->cookie( -name  => 'player_user', -value => $user );
 print $cgi->header( -cookie => $cookie );
 
 
