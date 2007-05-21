@@ -12,8 +12,8 @@ use StoneCold;
 
 
 my $cgi   = Class::CGI->new;
-my $user  = $cgi->param('user')  || 'default';
-my $sc    = StoneCold->new(user => $user);
+my $list  = $cgi->param('playlist')  || 'default';
+my $sc    = StoneCold->new(playlist => $list);
 my $state = $cgi->param('state') || "";
 
 my $name  = $sc->name;
@@ -32,7 +32,7 @@ print $cgi->header( "-type"          => 'text/plain',
 my $rss = XML::RSS->new( version => '2.0' );
 $rss->add_module( prefix => 'media', uri => 'http://search.yahoo.com/mrss/' );
     
-$rss->channel( title => "${name}'s Music" );
+$rss->channel( title => "The ${name} Playlist" );
 foreach my $entry ($sc->entries)
 {
 

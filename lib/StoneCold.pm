@@ -12,16 +12,16 @@ StoneCold - stuff for a player
 
     my $sc = StoneCold->new;
 
-    # the current user
-    my $user = $sc->user;
-    # .. and their name
-    my $name = $sc->name;
+    # the current playlist
+    my $playlist = $sc->playlist;
+    # .. and its name
+    my $name     = $sc->name;
     
-    # everyone who's got a playlist
-    my @people = $sc->people;
+    # all the playlists
+    my @lists    = $sc->playlists;
 
     # the files available
-    my @files = $sc->files
+    my @files    = $sc->files
 
     # when the playlist was last modified
     my $modified = $sc->changed
@@ -47,22 +47,22 @@ StoneCold - stuff for a player
 =cut
 
 
-=head2 new
+=head2 new [opt[s]]
 
 =cut
 
 sub new {
-    my $class     = shift;
-    my %opts      = @_;
-    my $cgi       = Class::CGI->new;
+    my $class  = shift;
+    my %opts   = @_;
+    my $cgi    = Class::CGI->new;
 
-    $opts{dbfile} ||= 'db/playlist.db';
-    $opts{user}   ||= 'default';
-    $opts{path}   ||= '/virtual/thegestalt.org/www/html/warez';
-    $opts{uri}    ||= 'http://thegestalt.org/warez';
+    $opts{dbfile}       ||= 'db/playlist.db';
+    $opts{playlist}     ||= 'default';
+    $opts{path}         ||= '/virtual/thegestalt.org/www/html/warez';
+    $opts{uri}          ||= 'http://thegestalt.org/warez';
     $opts{default_name} ||= 'simon';
     
-    $opts{_db}      = DBM::Deep->new( file      => $opts{dbfile},
+    $opts{_db} = DBM::Deep->new( file      => $opts{dbfile},
 #                         locking   => 1,
                           autoflush => 1,
                           type      => DBM::Deep->TYPE_ARRAY,
@@ -74,44 +74,44 @@ sub new {
     return $self;
 }
 
-=head2 user
+=head2 playlist
 
-Return the current user
+Return the current playlist
 
 =cut
 
-sub user {
+sub playlist {
     my $self = shift;
-    return $self->{user};    
+    return $self->{playlist};    
 }
 
 =head2 name
 
-Return's the name of the current user
+Return's the name of the current playlist
 
 =cut
 
 sub name {
     my $self = shift;
-    my $name = $self->user;
+    my $name = $self->playlist;
     $name = $self->{default_name} if ($name eq 'default');
     return ucfirst(lc($name));
 }
 
-=head2 people
+=head2 playlists
 
-Return all the people who have a playlist.
+Return all the playlists.
 
 =cut
 
-sub people {
+sub playlists {
     my $self = shift;
     my $db   = $self->{_db};
-    my %people = ( $self->user => 1 );
+    my %people = ( $self->playlist => 1 );
     for (my $i=0; $i<$db->length; $i++) {
         my $entry =  $db->get($i);
         next unless defined $entry;
-        $people{$entry->{user}}++;
+        $people{$entry->{playlist}}++;
     }
     return sort keys %people;
 
@@ -152,7 +152,7 @@ Add a file to the current playlist
 sub add {
     my $self = shift;
     my $file = shift;
-    $self->{_db}->push({ file => $file, user => $self->user });
+    $self->{_db}->push({ file => $file, playlist => $self->playlist });
 
 }
 
@@ -178,7 +178,7 @@ Get all the entries in this playlist as C<StoneCold::Entry> object.
 sub entries {
     my $self = shift;
     my $db   = $self->{_db};
-    my $user = $self->user;
+    my $list = $self->playlist;
     my $path = $self->{path};
     my $uri  = $self->{uri};
 
@@ -186,12 +186,12 @@ sub entries {
     for (my $i=0; $i<$db->length; $i++) {
         my $entry =  $db->get($i);
         next unless defined $entry;
-        next unless $entry->{user} eq $user;
-        my $obj   = StoneCold::Entry->new( path => $path,
-                                           uri  => $uri,
-                                           name => $entry->{file},
-                                           user => $user,
-                                           id   => $i );
+        next unless $entry->{playlist} eq $list;
+        my $obj   = StoneCold::Entry->new( path     => $path,
+                                           uri      => $uri,
+                                           name     => $entry->{file},
+                                           playlist => $list,
+                                           id       => $i );
         push @entries, $obj;
     }
     return @entries;

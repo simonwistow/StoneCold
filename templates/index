@@ -1,6 +1,6 @@
 <html>
 <head>
-    <title>Stone Cold Playa - [% stonecold.name %]'s Music</title>
+    <title>Stone Cold Playa - The [% stonecold.name %] Playlist</title>
 
     <link rel="alternate" type="application/rss+xml" title="RSS" href="feed.cgi" />
     <link rel="stylesheet" type="text/css" media="screen"  href="themes/[% theme %].css" />
@@ -10,18 +10,19 @@
     <script type="text/javascript">
 
 
-    var user = getUser();
-    var feed = 'feed.cgi?user=[% stonecold.user %]';
+    var list = getPlaylist();
+    var feed = 'feed.cgi?playlist=[% stonecold.playlist %]';
 
-    function getUser() {
-        var tmp = argItems('user');
+    function getPlaylist() {
+        // need to check cookie too
+        var tmp = argItems('playlist');
         if (tmp.length==0) {
             tmp = 'default';
         }
     }
 
     function pageLoad() {
-        user = getUser();
+        list = getPlaylist();
         checkNewPlayList();
     }
 
@@ -94,7 +95,7 @@
     <script type="text/javascript">
     var so = new SWFObject('assets/mediaplayer.swf','mpl','320','140','7');
     so.addParam('allowfullscreen','true');
-    so.addVariable('file','feed.cgi?user=[% stonecold.user %]');
+    so.addVariable('file','feed.cgi?playlist=[% stonecold.playlist %]');
     so.addVariable('height','140');
     so.addVariable('width','320');
     so.addVariable('displaywidth','120');
@@ -105,23 +106,23 @@
     so.write('player');
     </script>
 </div>
-<p id="choose_user">
+<p id="choose_playlist">
 <form method="POST">
-[% SET people = stonecold.people %]
-[% IF people.size > 1 %]
-Choose an existing user 
-<select name="user">
-[% FOR person = people %]
-[%# NEXT IF person=="default" %]
-<option value="[% person %]" [% IF person==stonecold.user; "selected='1'"; END %]>[% person | ucfirst %]</option>
+[% SET lists = stonecold.playlists %]
+[% IF lists.size > 1 %]
+Choose an existing playlist 
+<select name="playlist">
+[% FOR list = lists %]
+[%# NEXT IF list=="default" %]
+<option value="[% list %]" [% IF list==stonecold.playlist; "selected='1'"; END %]>[% list | ucfirst %]</option>
 [% END %] 
 </select>&nbsp;<br />
-... or start a new user 
+... or start a new playlist 
 [% ELSE %]
-Start a new user 
+Start a new playlist
 [% END %]
-<input type="text" name="new_user" />&nbsp;
-<input type="submit" value="Switch User" />
+<input type="text" name="new_playlist" />&nbsp;
+<input type="submit" value="Switch Playlist" />
 </form>
 </p>
 <p id="items">

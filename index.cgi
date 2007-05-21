@@ -9,13 +9,13 @@ use Template;
 use StoneCold;
 
 
-my $cgi    = Class::CGI->new;
-my $user   = $cgi->param('new_user') || $cgi->param('user') || $cgi->cookie('player_user') || 'default';
-my $cookie = $cgi->cookie( -name  => 'player_user', -value => $user );
+my $cgi      = Class::CGI->new;
+my $playlist = $cgi->param('new_playlist') || $cgi->param('playlist') || $cgi->cookie('stonecold_playlist') || 'default';
+my $cookie   = $cgi->cookie( -name  => 'stonecold_playlist', -value => $playlist );
 print $cgi->header( -cookie => $cookie );
 
 
-my $sc     = StoneCold->new( user => $user );
+my $sc     = StoneCold->new( playlist => $playlist );
 
 
 my $template = Template->new;
