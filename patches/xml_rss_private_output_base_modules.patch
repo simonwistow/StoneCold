@@ -1,0 +1,21 @@
+--- Base.pm	Sat Feb 24 11:39:35 2007
++++ /usr/local/lib/perl5/site_perl/5.8.8/XML/RSS/Private/Output/Base.pm	Sat May 19 15:58:19 2007
+@@ -86,7 +86,17 @@
+ sub _out_tag {
+     my ($self, $tag, $inner) = @_;
+ 
+-    return $self->_out("<$tag>" . $self->_encode($inner) . "</$tag>\n");
++ 	if (ref($inner) eq 'HASH') {
++       return $self->_out(
++            "<$tag " .
++            join(' ',
++                map { "$_=\"" . $self->_encode($inner->{$_}) . '"' } keys(%$inner)
++            ) .
++            " />\n"
++        );
++	} else {
++        return $self->_out("<$tag>" . $self->_encode($inner) . "</$tag>\n");
++	}
+ }
+ 
+ sub _out_ns_tag {
