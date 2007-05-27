@@ -68,6 +68,8 @@
                     checkNewPlayList();
               }
          });
+        var song = "http://thegestalt.org/warez/"+what;
+		addItem({file: song});
     }
 
 
